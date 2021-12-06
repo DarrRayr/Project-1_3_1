@@ -36,6 +36,7 @@ score = 0
 min_bullets = 0
 max_bullets = 0
 font_setup = ("Arial", 20, "normal")
+bullet_list = []
 
 
 
@@ -72,6 +73,15 @@ def pick_difficulty():
 		pick_difficulty()
 
 
+def move_bullet(bullet):
+	if bullet.xcor() != 300:
+		bullet.forward(10)
+		time.sleep(.5)
+		move_bullet(bullet)
+	else:
+		bullet.hideturtle()
+		bullet_list.remove(bullet)
+	
 	
 
 #moves player forward
@@ -94,19 +104,40 @@ def move_right():
 	cur_ycor = player.ycor() 
 	player.setposition(cur_xcor+100,cur_ycor)
 
-def make_border():
-	writer.penup()
-	writer.setposition(-300,-300)
-	writer.pendown()
-	for x in range(2):
-		writer.left(90)
-		writer.forward(300)
-		writer.left(90)
-		writer.forward(300)
+def spawn_bullet(bullet):
+	spawn_pos = rand.randint(0,3)
+	bullet_update(bullet)
+	if spawn_pos == 1:
+		bullet.setposition(-300,300)
+		move_bullet(bullet)
+	if spawn_pos == 2:
+		bullet.setposition(-300,200)
+		move_bullet(bullet)
+	if spawn_pos == 3:
+		bullet.setposition(-300,100)
+		move_bullet(bullet)
+	
+
+def get_bullets():
+
+	num_of_bullets = rand.randint(min_bullets, max_bullets)
+	for i in range(num_of_bullets):
+		current = trtl.Turtle()
+		bullet_list.append(current)
+		current.penup()
+		spawn_bullet(current)
+
+def bullet_update(bullet):
+	bullet.shape("bullet.gif")
+
+
+
+
+
 
 	
 
-#moves player back to 0,0 if they try and get out of the border
+
 
 
 
@@ -121,10 +152,10 @@ wn.onkey (move_backward, 's')
 wn.onkey(move_left, 'a')
 wn.onkey(move_right, 'd')
 wn.listen()
-make_border()
+
 random_char()
 pick_difficulty()
-
+get_bullets()
 
 
 
